@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity implements Validator.Validat
 
 
     //@NotEmpty
-    Bitmap bitmap;
+    Bitmap bitmaphome;
+    Bitmap bitmapaway;
     @NotEmpty
     private EditText awayteamInput;
     @NotEmpty
@@ -76,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements Validator.Validat
             if (data != null) {
                 try {
                     Uri imageUri = data.getData();
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                    awaylogoInput.setImageBitmap(bitmap);
+                    bitmapaway = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    awaylogoInput.setImageBitmap(bitmapaway);
 
                 } catch (IOException e) {
                     Toast.makeText(this, "Can't load image", Toast.LENGTH_SHORT).show();
@@ -89,8 +90,8 @@ public class MainActivity extends AppCompatActivity implements Validator.Validat
             if (data != null) {
                 try {
                     Uri imageUri = data.getData();
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                    homelogoInput.setImageBitmap(bitmap);
+                    bitmaphome = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    homelogoInput.setImageBitmap(bitmaphome);
 
                 } catch (IOException e) {
                     Toast.makeText(this, "Can't load image", Toast.LENGTH_SHORT).show();
@@ -110,15 +111,18 @@ public class MainActivity extends AppCompatActivity implements Validator.Validat
         String hometeam = hometeamInput.getText().toString();
         String awayteam = awayteamInput.getText().toString();
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 50, baos);
+
+        ByteArrayOutputStream baoshome = new ByteArrayOutputStream();
+        ByteArrayOutputStream baosaway = new ByteArrayOutputStream();
+        bitmaphome.compress(Bitmap.CompressFormat.PNG, 50, baoshome);
+        bitmapaway.compress(Bitmap.CompressFormat.PNG, 50, baosaway);
 
         Intent intent = new Intent(this, MatchActivity.class);
         intent.putExtra(DATA_KEY, new Data(awayteam, hometeam));
 
         //galeri
-        intent.putExtra("HomeImage", baos.toByteArray());
-        intent.putExtra("AwayImage", baos.toByteArray());
+        intent.putExtra("HomeImage", baoshome.toByteArray());
+        intent.putExtra("AwayImage", baosaway.toByteArray());
         startActivity(intent);
     }
 

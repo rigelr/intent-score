@@ -38,8 +38,10 @@ public class MatchActivity extends AppCompatActivity {
 
             hometeamText.setText(data.getHometeam());
             awayteamText.setText(data.getAwayteam());
-//            Bitmap bmp = BitmapFactory.decodeByteArray(getIntent().getByteArrayExtra("yourImage"), 0, getIntent().getByteArrayExtra("yourImage").length);
-//            homelogo.setImageBitmap(bmp);
+            Bitmap bmphome = BitmapFactory.decodeByteArray(getIntent().getByteArrayExtra("HomeImage"), 0, getIntent().getByteArrayExtra("HomeImage").length);
+            homelogo.setImageBitmap(bmphome);
+            Bitmap bmpaway = BitmapFactory.decodeByteArray(getIntent().getByteArrayExtra("AwayImage"), 0, getIntent().getByteArrayExtra("AwayImage").length);
+            awaylogo.setImageBitmap(bmpaway);
 //            homelogo.setImageBitmap(bmp);
 
 
