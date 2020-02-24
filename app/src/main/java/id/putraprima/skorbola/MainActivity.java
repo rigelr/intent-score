@@ -1,21 +1,161 @@
 package id.putraprima.skorbola;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+import id.putraprima.skorbola.model.Data;
+
+
+public class MainActivity extends AppCompatActivity implements Validator.ValidationListener {
+    Validator validator;
+    private static final String TAG = MainActivity.class.getCanonicalName();
+    private static final int GALLERY_REQUEST_CODE_AWAY = 1;
+    private static final int GALLERY_REQUEST_CODE_HOME = 2;
+    public static String DATA_KEY="DATA_KEY";
+
+
+    //@NotEmpty
+    Bitmap bitmap;
+    @NotEmpty
+    private EditText awayteamInput;
+    @NotEmpty
+    private EditText hometeamInput;
+    private ImageView awaylogoInput;
+    private ImageView homelogoInput;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //TODO
+        awayteamInput= findViewById(R.id.away_team);
+        hometeamInput= findViewById(R.id.home_team);
+        awaylogoInput= findViewById(R.id.away_logo);
+        homelogoInput= findViewById(R.id.home_logo);
+
+        validator =new Validator(this);
+        validator.setValidationListener(this);
+
         //Fitur Main Activity
         //1. Validasi Input Home Team
         //2. Validasi Input Away Team
         //3. Ganti Logo Home Team
         //4. Ganti Logo Away Team
         //5. Next Button Pindah Ke MatchActivity
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_CANCELED) {
+            return;
+        }
+
+        if (requestCode == GALLERY_REQUEST_CODE_AWAY) {
+            if (data != null) {
+                try {
+                    Uri imageUri = data.getData();
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    awaylogoInput.setImageBitmap(bitmap);
+
+                } catch (IOException e) {
+                    Toast.makeText(this, "Can't load image", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        }
+        if (requestCode == GALLERY_REQUEST_CODE_HOME) {
+            if (data != null) {
+                try {
+                    Uri imageUri = data.getData();
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    homelogoInput.setImageBitmap(bitmap);
+
+                } catch (IOException e) {
+                    Toast.makeText(this, "Can't load image", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        }
+    }
+
+
+    public void handleNext(View view) {
+        validator.validate();
+    }
+
+    @Override
+    public void onValidationSucceeded() {
+        String hometeam = hometeamInput.getText().toString();
+        String awayteam = awayteamInput.getText().toString();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 50, baos);
+
+        Intent intent = new Intent(this, MatchActivity.class);
+        intent.putExtra(DATA_KEY, new Data(awayteam, hometeam));
+
+        //galeri
+        intent.putExtra("HomeImage", baos.toByteArray());
+        intent.putExtra("AwayImage", baos.toByteArray());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        for (ValidationError error : errors) {
+            View view = error.getView();
+            String message = error.getCollatedErrorMessage(this);
+
+            // Display error messages ;)
+            if (view instanceof EditText) {
+                ((EditText) view).setError(message);
+            }
+        }
+        if(errors.size() > 0){
+            if (errors.get(0).getView() instanceof EditText) {
+                errors.get(0).getView().requestFocus();
+            }
+            else {
+                String message = errors.get(0).getCollatedErrorMessage(this);
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    public void handleAwayLogo(View view) {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, GALLERY_REQUEST_CODE_AWAY);
+    }
+
+    public void handleHomeLogo(View view) {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, GALLERY_REQUEST_CODE_HOME);
     }
 }
