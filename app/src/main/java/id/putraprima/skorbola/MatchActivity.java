@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +17,12 @@ public class MatchActivity extends AppCompatActivity {
     private TextView awayteamText;
     private ImageView homelogo;
     private ImageView awaylogo;
+//    skor
+    private TextView homescoreText;
+    private TextView awayscoreText;
 
+    int awayscore=0;
+    int homescore=0;
     private Data data;
 
 
@@ -52,5 +58,32 @@ public class MatchActivity extends AppCompatActivity {
         //1.Menampilkan detail match sesuai data dari main activity
         //2.Tombol add score menambahkan satu angka dari angka 0, setiap kali di tekan
         //3.Tombol Cek Result menghitung pemenang dari kedua tim dan mengirim nama pemenang ke ResultActivity, jika seri di kirim text "Draw"
+    }
+
+
+    public void handleaddhome(View view) {
+        awayscore=awayscore+1;
+        displayForTeamAway(awayscore);
+
+    }
+    public void displayForTeamAway(int score) {
+        TextView scoreView = (TextView) findViewById(R.id.score_home);
+        scoreView.setText(String.valueOf(score));
+    }
+
+    public void handleaddaway(View view) {
+        homescore=homescore+1;
+        displayForTeamHome(homescore);
+
+    }
+    public void displayForTeamHome(int score) {
+        TextView scoreView = (TextView) findViewById(R.id.score_away);
+        scoreView.setText(String.valueOf(score));
+    }
+
+    public void handleHasil(View view) {
+        if (homescore>awayscore){
+
+        }
     }
 }
