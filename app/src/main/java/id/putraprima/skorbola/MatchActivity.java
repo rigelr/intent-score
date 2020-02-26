@@ -2,6 +2,7 @@ package id.putraprima.skorbola;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -11,18 +12,24 @@ import android.widget.TextView;
 
 import id.putraprima.skorbola.model.Data;
 
+import static id.putraprima.skorbola.MainActivity.DATA_KEY;
+
 public class MatchActivity extends AppCompatActivity {
 
     private TextView hometeamText;
     private TextView awayteamText;
     private ImageView homelogo;
     private ImageView awaylogo;
+
 //    skor
     private TextView homescoreText;
     private TextView awayscoreText;
 
+    String result;
+
     int awayscore=0;
     int homescore=0;
+
     private Data data;
 
 
@@ -40,7 +47,7 @@ public class MatchActivity extends AppCompatActivity {
         if (extras != null) {
 //            String usernameInput
             // TODO: display value here
-            data = extras.getParcelable(MainActivity.DATA_KEY);
+            data = extras.getParcelable(DATA_KEY);
 
             hometeamText.setText(data.getHometeam());
             awayteamText.setText(data.getAwayteam());
@@ -82,8 +89,24 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     public void handleHasil(View view) {
+
+        Intent intent = new Intent(this, ResultActivity.class);
+        intent.putExtra(ResultActivity.EXTRA_RESULT,result);
         if (homescore>awayscore){
 
+            result="pemenangnya adalah "+ data.getAwayteam();
+            intent.putExtra(ResultActivity.EXTRA_RESULT,result);
+
+        }else if(awayscore>homescore){
+
+            result="pemenangnya adalah "+data.getHometeam();
+            intent.putExtra(ResultActivity.EXTRA_RESULT,result);
+
+        }else if(awayscore==homescore){
+
+            result="skor seri";
+            intent.putExtra(ResultActivity.EXTRA_RESULT,result);
         }
+        startActivity(intent);
     }
 }
