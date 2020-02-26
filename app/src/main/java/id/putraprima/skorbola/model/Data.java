@@ -13,19 +13,8 @@ public class Data implements Parcelable {
     private String hometeam;
     private String awayscore;
     private String homescore;
-    private  String result;
+    //private  String result;
 
-    public Data(String result) {
-        this.result = result;
-    }
-
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
-    }
 
     public String getAwayscore() {
         return awayscore;

@@ -69,22 +69,22 @@ public class MatchActivity extends AppCompatActivity {
 
 
     public void handleaddhome(View view) {
-        awayscore=awayscore+1;
-        displayForTeamAway(awayscore);
-
-    }
-    public void displayForTeamAway(int score) {
-        TextView scoreView = (TextView) findViewById(R.id.score_home);
-        scoreView.setText(String.valueOf(score));
-    }
-
-    public void handleaddaway(View view) {
         homescore=homescore+1;
         displayForTeamHome(homescore);
 
     }
-    public void displayForTeamHome(int score) {
+    public void displayForTeamAway(int score) {
         TextView scoreView = (TextView) findViewById(R.id.score_away);
+        scoreView.setText(String.valueOf(score));
+    }
+
+    public void handleaddaway(View view) {
+        awayscore=awayscore+1;
+        displayForTeamAway(awayscore);
+
+    }
+    public void displayForTeamHome(int score) {
+        TextView scoreView = (TextView) findViewById(R.id.score_home);
         scoreView.setText(String.valueOf(score));
     }
 
@@ -94,12 +94,12 @@ public class MatchActivity extends AppCompatActivity {
         intent.putExtra(ResultActivity.EXTRA_RESULT,result);
         if (homescore>awayscore){
 
-            result="pemenangnya adalah "+ data.getAwayteam();
+            result="pemenangnya adalah "+ data.getHometeam();
             intent.putExtra(ResultActivity.EXTRA_RESULT,result);
 
         }else if(awayscore>homescore){
 
-            result="pemenangnya adalah "+data.getHometeam();
+            result="pemenangnya adalah "+data.getAwayteam();
             intent.putExtra(ResultActivity.EXTRA_RESULT,result);
 
         }else if(awayscore==homescore){
